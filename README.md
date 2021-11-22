@@ -51,6 +51,21 @@ $ st {directory}
 
 ### Documentation
 
+```bash
+$ python st.py --help
+
+Usage: st.py [OPTIONS]
+
+Options:
+  -p, --path TEXT                 Path where you want to create your Streamlit
+                                  project.
+
+  --open_project_in_vs_code INTEGER
+                                  Open VS code with the newly created file.
+  --run_app INTEGER               Run Streamlit script
+  --open_app_in_browser INTEGER   Open Streamlit app in browser
+  --help                          Show this message and exit.
+```
 
 ### Troubleshooting
 
