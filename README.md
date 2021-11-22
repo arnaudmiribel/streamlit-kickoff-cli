@@ -1,6 +1,6 @@
 # 🎈 `st` - a friendly Streamlit CLI
 
-`st` is a CLI that helps you kick-off a new Streamlit project from the command line
+`st` is a CLI that helps you kick-off a new Streamlit project so you can start crafting the app as soon as possible!
 
 ## How it works
 
