@@ -1,16 +1,16 @@
-# 👨‍🏫 `st`: a friendly instructor CLI
+# 🎈 `st` - a friendly Streamlit CLI
 
-`st` is a CLI that helps you starting a new Streamlit project from the commandl ine
+`st` is a CLI that helps you kick-off a new Streamlit project from the command line
 
-## ✨ How it works
+## How it works
 
-Simple as:
+✨ Simple as:
 
 ```bash
 $ st .
 ```
 
-#[![np demo](./demo_quick.mov)]()
+https://user-images.githubusercontent.com/7164864/142880682-e2ac5e67-400e-4eec-bef8-22db7408c9f4.mov
 
 
 ## 🚀 Usage
@@ -30,7 +30,7 @@ pip install -r requirements.txt
 
 2. Make sure to enable your CLI to access VS Code. See [this link](https://stackoverflow.com/a/40129135/6159698).
 
-3. Add the alias to your `~/.bash_profile`:
+3. Add the alias to your `~/.bashrc`:
 ```
 # Alias for st
 alias st='python ~/your/path/to/st/st.py -p'
