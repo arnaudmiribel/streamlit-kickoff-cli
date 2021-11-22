@@ -30,7 +30,7 @@ pip install -r requirements.txt
 
 2. Make sure to enable your CLI to access VS Code. See [this link](https://stackoverflow.com/a/40129135/6159698).
 
-3. Add the alias to your `~/.bash_profile`:
+3. Add the alias to your `~/.bashrc`:
 ```
 # Alias for st
 alias st='python ~/your/path/to/st/st.py -p'
