@@ -1,4 +1,4 @@
-# 👨‍🏫 `st`: a friendly instructor CLI
+# 🎈 `st`: a friendly instructor CLI
 
 `st` is a CLI that helps you starting a new Streamlit project from the commandl ine
 
@@ -10,7 +10,7 @@ Simple as:
 $ st .
 ```
 
-#[![np demo](./demo_quick.mov)]()
+https://user-images.githubusercontent.com/7164864/142880682-e2ac5e67-400e-4eec-bef8-22db7408c9f4.mov
 
 
 ## 🚀 Usage
