@@ -1,10 +1,10 @@
-# 🎈 `st`: a friendly instructor CLI
+# 🎈 `st` - a friendly Streamlit CLI
 
 `st` is a CLI that helps you to quickly start a new Streamlit project from the command line
 
-## ✨ How it works
+## How it works
 
-Simple as:
+✨ Simple as:
 
 ```bash
 $ st .
