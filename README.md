@@ -10,7 +10,7 @@ Simple as:
 $ st .
 ```
 
-#[![np demo](./demo_quick.gif)]()
+#[![np demo](./demo_quick.mov)]()
 
 
 ## 🚀 Usage
