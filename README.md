@@ -1,6 +1,6 @@
 # 🎈 `st`: a friendly instructor CLI
 
-`st` is a CLI that helps you starting a new Streamlit project from the commandl ine
+`st` is a CLI that helps you to quickly start a new Streamlit project from the command line
 
 ## ✨ How it works
 
