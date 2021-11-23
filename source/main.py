@@ -35,27 +35,28 @@ def warning(text):
     "-p",
     "--path",
     help="Path where you want to create your Streamlit project.",
+    default=".",
 )
 @click.option(
     "--open_project_in_vs_code",
-    default=1,
+    default=True,
     help="Open VS code with the newly created file.",
 )
 @click.option(
     "--run_app",
-    default=1,
+    default=True,
     help="Run Streamlit script",
 )
 @click.option(
     "--open_app_in_browser",
-    default=1,
+    default=True,
     help="Open Streamlit app in browser",
 )
 def go(
     path: str,
-    open_project_in_vs_code: int,
-    open_app_in_browser: int,
-    run_app: int,
+    open_project_in_vs_code: bool,
+    open_app_in_browser: bool,
+    run_app: bool,
 ):
 
     header()
@@ -91,7 +92,3 @@ def go(
         browser.open_new_tab()
 
     new_step("Closing...")
-
-
-if __name__ == "__main__":
-    go()

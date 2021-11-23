@@ -7,7 +7,7 @@
 ✨ Simple as:
 
 ```bash
-$ st .
+$ st
 ```
 
 https://user-images.githubusercontent.com/7164864/142880682-e2ac5e67-400e-4eec-bef8-22db7408c9f4.mov
@@ -17,42 +17,46 @@ https://user-images.githubusercontent.com/7164864/142880682-e2ac5e67-400e-4eec-b
 
 ### Prerequisites
 
-This is a working setup for anyone using Microsoft VS Code.
-Has been tested solely on Mac OSX.
+This is a working setup using OSX & VS Code.
 
-#### Manually
+### Install
 
-1. Install requirements:
-
-```
-pip install -r requirements.txt
-```
-
-2. Make sure to enable your CLI to access VS Code. See [this link](https://stackoverflow.com/a/40129135/6159698).
-
-3. Add the alias to your `~/.bashrc`:
-```
-# Alias for st
-alias st='python ~/your/path/to/st/st.py -p'
-```
-
-4. Source it:
-```
-source ~/.bash_profile
-```
-
-### Getting started
+**Using pip:**
 
 Run:
+```
+$ pip install st-kickoff
+```
 
-```
-$ st {directory}
-```
 
 ### Documentation
 
+```
+$ st --help
+
+Usage: st [OPTIONS]
+
+Options:
+  -p, --path TEXT                 Path where you want to create your Streamlit
+                                  project. (Default: ".")
+
+  --open_project_in_vs_code TEXT  Open VS code with the newly created file. (Default: True)
+  --run_app TEXT                  Run Streamlit script (Default: True)
+  --open_app_in_browser TEXT      Open Streamlit app in browser (Default: True)
+  --help                          Show this message and exit.
+```
+
+### Get started!
+
+Make a new directory, `cd` in and run:
+
+```
+$ st 
+```
 
 ### Troubleshooting
+
+- Make sure your CLI can access VS Code. See [this link](https://stackoverflow.com/a/40129135/6159698).
 
 - If you get `xcrun: error: invalid active developer path`... error:  
 Visit https://apple.stackexchange.com/a/254381 or run:
