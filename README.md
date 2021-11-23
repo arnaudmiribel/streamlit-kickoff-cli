@@ -2,9 +2,7 @@
 
 `st` is a CLI that helps you kick-off a new Streamlit project so you can start crafting the app as soon as possible!
 
-## How it works
-
-✨ Simple as:
+✨ It's as simple as:
 
 ```bash
 $ st
