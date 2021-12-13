@@ -1,10 +1,14 @@
-# 🎈 `st` - a friendly Streamlit CLI
+# 🎈 `st` — a CLI to kick-off your Streamlit project
 
-`st` is a CLI that helps you kick-off a new Streamlit project so you can start crafting the app as soon as possible!
+`st` is a CLI that helps you start a new Streamlit project. Here's what `st` does:
+- Create a script `streamlit_app.py` file with a basic Streamlit template
+- Open that script in VS Code
+- Run the Streamlit app
+- Open the app in your browser
 
-## How it works
+So you're ready to start crafting the app!
 
-✨ Simple as:
+✨ It's as simple as:
 
 ```bash
 $ st
