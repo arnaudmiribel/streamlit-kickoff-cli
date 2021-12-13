@@ -2,32 +2,12 @@ import click
 import os
 import webbrowser
 from pathlib import Path
-import subprocess
 
 SCRIPT_TEMPLATE = """import streamlit as st
 
 st.title("🎈 My new app!")
 st.write("Welcome to your new app. Have fun editing it")
 st.balloons()
-"""
-
-README_TEMPLATE = """
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](DEPLOYED_APP_URL)
-
-# 🎈 My new app
-
-Some super description of my app
-"""
-
-GITIGNORE_TEMPLATE = """# Byte-compiled / optimized / DLL files
-__pycache__/
-
-# Notebook
-.ipynb_checkpoints
-profile_default/
-ipython_config.py
-
-# Streamlit secrets
 """
 
 
@@ -55,33 +35,31 @@ def warning(text):
     "-p",
     "--path",
     help="Path where you want to create your Streamlit project.",
-    default=".",
 )
 @click.option(
     "--open_project_in_vs_code",
-    default=True,
+    default=1,
     help="Open VS code with the newly created file.",
 )
 @click.option(
     "--run_app",
-    default=True,
+    default=1,
     help="Run Streamlit script",
 )
 @click.option(
     "--open_app_in_browser",
-    default=True,
+    default=1,
     help="Open Streamlit app in browser",
 )
 def go(
     path: str,
-    open_project_in_vs_code: bool,
-    open_app_in_browser: bool,
-    run_app: bool,
+    open_project_in_vs_code: int,
+    open_app_in_browser: int,
+    run_app: int,
 ):
 
     header()
 
-    project_path = Path(path)
     streamlit_script_path = Path(path) / "streamlit_app.py"
 
     # Create `streamlit_app.py`
@@ -92,33 +70,18 @@ def go(
     else:
         click.echo(click.style("Streamlit script already exists!"))
 
-    # Create secrets
-    new_step(f"Adding secrets to {streamlit_script_path}...")
-    (project_path / ".streamlit").mkdir(parents=False, exist_ok=False)
-    (project_path / ".streamlit" / "secrets.toml").touch()
-
-    # Create requirements
-    new_step(f"Adding requirements to {streamlit_script_path}...")
-    (project_path / "requirements.txt").touch()
-
-    # Create .gitignore
-    with open(project_path / ".gitignore", "w") as f:
-        f.write(GITIGNORE_TEMPLATE)
-
-    # Create README
-    with open(project_path / "README.md", "w") as f:
-        f.write(README_TEMPLATE)
-
     # Open project in VS Code.
     if open_project_in_vs_code:
         new_step("Opening project in VS Code...")
-        os.system(f'code "{project_path}"')
         os.system(f'code "{streamlit_script_path}"')
 
     # Run app.
     if run_app:
         new_step("Running Streamlit app")
+        import subprocess
+
         out = subprocess.check_output(["streamlit", "run", streamlit_script_path])
+
         new_step(out)
 
     # Open app in browser.
@@ -128,3 +91,7 @@ def go(
         browser.open_new_tab()
 
     new_step("Closing...")
+
+
+if __name__ == "__main__":
+    go()

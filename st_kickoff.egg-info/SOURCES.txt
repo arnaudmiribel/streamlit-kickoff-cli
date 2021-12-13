@@ -1,0 +1,11 @@
+README.md
+setup.py
+source/__init__.py
+source/main.py
+st_kickoff.egg-info/PKG-INFO
+st_kickoff.egg-info/SOURCES.txt
+st_kickoff.egg-info/dependency_links.txt
+st_kickoff.egg-info/entry_points.txt
+st_kickoff.egg-info/not-zip-safe
+st_kickoff.egg-info/requires.txt
+st_kickoff.egg-info/top_level.txt
