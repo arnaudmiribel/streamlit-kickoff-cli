@@ -102,10 +102,12 @@ def go(
     (project_path / "requirements.txt").touch()
 
     # Create .gitignore
+    new_step(f"Adding .gitignore to {streamlit_script_path}...")
     with open(project_path / ".gitignore", "w") as f:
         f.write(GITIGNORE_TEMPLATE)
 
     # Create README
+    new_step(f"Adding README.md to {streamlit_script_path}...")
     with open(project_path / "README.md", "w") as f:
         f.write(README_TEMPLATE)
 

@@ -1,3 +1,4 @@
+LICENSE
 README.md
 setup.py
 source/__init__.py
