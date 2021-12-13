@@ -8,7 +8,7 @@ long_description = "st is a CLI that helps you kick-off a new Streamlit  \
 
 setup(
     name="st-kickoff",
-    version="0.1",
+    version="0.2",
     author="Arnaud Miribel",
     author_email="arnaudmiribel@gmail.com",
     url="https://github.com/arnaudmiribel/st",

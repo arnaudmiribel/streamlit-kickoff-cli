@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: st-kickoff
-Version: 0.1
+Version: 0.2
 Summary: st is a CLI that helps you kick-off a new Streamlit project          so you can start crafting the app as soon as possible!
 Home-page: https://github.com/arnaudmiribel/st
 Author: Arnaud Miribel
