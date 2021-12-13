@@ -2,7 +2,10 @@
 
 `st` is a CLI that helps you start a new Streamlit project. Here's what `st` does:
 - Create a script `streamlit_app.py` file with a basic Streamlit template
-- Open that script in VS Code
+- Open the project & script in VS Code
+- Writes an empty `requirements.txt` and `.streamlit/secrets.toml`
+- Writes a basic `README.md`
+- Writes a basic `.gitignore` to disregard Streamlit Secrets
 - Run the Streamlit app
 - Open the app in your browser
 
