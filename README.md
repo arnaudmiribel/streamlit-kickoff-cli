@@ -23,7 +23,8 @@ So you're ready to start crafting the app!
 $ st
 ```
 
-https://user-images.githubusercontent.com/7164864/142880682-e2ac5e67-400e-4eec-bef8-22db7408c9f4.mov
+![downloaded-GIF (1)](https://user-images.githubusercontent.com/7164864/145828632-052ef856-6fb4-4823-9405-9c822fead2fd.gif)
+
 
 
 ## 🚀 Usage
