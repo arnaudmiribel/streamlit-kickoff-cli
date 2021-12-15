@@ -4,7 +4,7 @@ Just hit `st` in your new project directory and it will:
 - Create a basic Streamlit project structure in your directory:
 ```
 .
-├── .gitignore         # basic .gitignore to ignroe Streamlit secrets!
+├── .gitignore         # basic .gitignore to ignore Streamlit secrets!
 ├── .streamlit
 │   └── secrets.toml   # empty Streamlit Secrets
 ├── README.md          # basic README
