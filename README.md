@@ -1,3 +1,5 @@
+[![Downloads](https://pepy.tech/badge/st-kickoff)](https://pepy.tech/project/st-kickoff)
+
 # 🎈 `st` — a CLI to kick-off your Streamlit project
 
 Just hit `st` in your new project directory and it will:
