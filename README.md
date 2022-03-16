@@ -1,6 +1,4 @@
-[![Downloads](https://pepy.tech/badge/st-kickoff)](https://pepy.tech/project/st-kickoff)
-
-# 🎈 `st` — a CLI to kick-off your Streamlit project
+# 🎈 Kick-off your Streamlit projects with `st` CLI
 
 Just hit `st` in your new project directory and it will:
 - Create a basic Streamlit project structure in your directory:
@@ -26,7 +24,6 @@ $ st
 ```
 
 ![downloaded-GIF (1)](https://user-images.githubusercontent.com/7164864/145828632-052ef856-6fb4-4823-9405-9c822fead2fd.gif)
-
 
 
 ## 🚀 Usage
