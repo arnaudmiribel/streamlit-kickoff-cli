@@ -1,8 +1,9 @@
-import click
 import os
+import subprocess
 import webbrowser
 from pathlib import Path
-import subprocess
+
+import click
 
 SCRIPT_TEMPLATE = """import streamlit as st
 
@@ -10,6 +11,28 @@ st.title("🎈 My new app!")
 st.write("Welcome to your new app. Have fun editing it")
 st.balloons()
 """
+
+SCRIPT_TEMPLATE_SNOWFLAKE = """
+import streamlit as st
+import snowflake.connector
+
+st.title("🎈 My new app!")
+st.write("Welcome to your new app. Have fun editing it")
+st.balloons()
+
+#snowflake connection
+pw = st.secrets["SNOWFLAKE_PASSWORD"]
+acc = st.secrets["SNOWFLAKE_ACCOUNT"]
+usr = st.secrets["SNOWFLAKE_USERNAME"]
+ctx = snowflake.connector.connect(user=user, password=pw, account=acc)
+cs = ctx.cursor()
+test_query = '''
+SELECT * FROM my_test_db.public.country_weather_cnt_table
+'''
+cs.execute(test_query)
+df = pd.DataFrame(cs.fetchall())
+"""
+
 
 README_TEMPLATE = """
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](DEPLOYED_APP_URL)
@@ -28,6 +51,12 @@ profile_default/
 ipython_config.py
 
 # Streamlit secrets
+"""
+
+SNOWFLAKE_SECRETS_TEMPLATE = """
+SNOWFLAKE_USERNAME = ""
+SNOWFLAKE_PASSWORD = ""
+SNOWFLAKE_ACCOUNT = ""
 """
 
 
@@ -72,11 +101,17 @@ def warning(text):
     default=True,
     help="Open Streamlit app in browser",
 )
+@click.option(
+    "--snowflake",
+    default=False,
+    help="Set up Streamlit app to connect to Snowflake",
+)
 def go(
     path: str,
     open_project_in_vs_code: bool,
     open_app_in_browser: bool,
     run_app: bool,
+    snowflake: bool,
 ):
 
     header()
@@ -88,14 +123,21 @@ def go(
     if not os.path.exists(streamlit_script_path):
         new_step(f"Creating new Streamlit script at {streamlit_script_path}...")
         with open(streamlit_script_path, "w") as f:
-            f.write(SCRIPT_TEMPLATE)
+            if not snowflake:
+                f.write(SCRIPT_TEMPLATE)
+            else:
+                f.write(SCRIPT_TEMPLATE_SNOWFLAKE)
     else:
         click.echo(click.style("Streamlit script already exists!"))
 
     # Create secrets
     new_step(f"Adding secrets to {streamlit_script_path}...")
     (project_path / ".streamlit").mkdir(parents=False, exist_ok=False)
-    (project_path / ".streamlit" / "secrets.toml").touch()
+    if not snowflake:
+        (project_path / ".streamlit" / "secrets.toml").touch()
+    else:
+        with open(project_path / ".streamlit" / "secrets.toml", "w") as f:
+            f.write(SNOWFLAKE_SECRETS_TEMPLATE)
 
     # Create requirements
     new_step(f"Adding requirements to {streamlit_script_path}...")

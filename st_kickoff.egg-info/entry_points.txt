@@ -1,3 +1,2 @@
 [console_scripts]
 st = source.main:go
-
