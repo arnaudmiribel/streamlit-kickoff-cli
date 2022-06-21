@@ -1,41 +1,13 @@
-import click
 import os
+import re
+import subprocess
+import sys
 import webbrowser
 from pathlib import Path
-import subprocess
 from urllib.parse import urlparse
-import re
+
+import click
 from validators import url
-
-SCRIPT_TEMPLATE = """import streamlit as st
-
-st.title("🎈 My new app!")
-st.write("Welcome to your new app. Have fun editing it")
-st.balloons()
-"""
-
-README_TEMPLATE = """
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](DEPLOYED_APP_URL)
-
-# 🎈 My new app
-
-Some super description of my app
-"""
-
-GITIGNORE_TEMPLATE = """# Byte-compiled / optimized / DLL files
-__pycache__/
-
-# Notebook
-.ipynb_checkpoints
-profile_default/
-ipython_config.py
-
-# virtualenv
-.venv/
-
-# Streamlit secrets
-.streamlit/secret.toml
-"""
 
 
 def get_webbrowser(os="macos"):
@@ -57,13 +29,59 @@ def warning(text):
     click.echo(click.style(f"{text}", fg="red", bold=True), nl=True)
 
 
-def git_paths(target):
-    path = urlparse(target).path
-    clone_path = re.split("/blob/", target)[0]
-    cd_path = clone_path.strip("/").rsplit("/", 1)[-1]
-    main_script_path = re.split("/blob/[a-z]+/", path)[-1]
-    requirements_path = main_script_path.rsplit("/", 1)[0]
-    return clone_path, cd_path, main_script_path, requirements_path
+def error(text):
+    click.echo(click.style(f"💀💀💀 {text}", fg="red", bold=True), nl=True)
+
+
+def _target_is_valid(target: str):
+    if target is not None and url(target):
+        if "github" in target and target.endswith(".py"):
+            return True
+
+    return False
+
+
+def target_is_valid(target: str):
+    """Checks if target is valid. Otherwise throw exception and exit.
+
+    Args:
+        target (str): Target repository URL
+    """
+    if not _target_is_valid(target=target):
+        error(
+            "Input target must be a GitHub URL that points to the main .py"
+            " script"
+        )
+        sys.exit()
+
+
+def parse_target(target: str):
+    """Parse the target repository URL into useful pieces
+
+    Args:
+        target (str): Target repository URL
+
+    Returns:
+        str: Repository GitHub URL
+        pathlib.Path: Project path
+        pathlib.Path: Streamlit main script path
+        pathlib.Path: Requirements file path
+    """
+    repository_url = urlparse(target).path
+    repository_url = re.split("/blob/", target)[0]
+    project_path = Path(repository_url.strip("/").rsplit("/", 1)[-1])
+    streamlit_script_path = (
+        project_path / re.split("/blob/[a-z]+/", target)[-1]
+    )
+    requirements_path = project_path / "requirements.txt"
+
+    return (
+        repository_url,
+        project_path,
+        streamlit_script_path,
+        requirements_path,
+    )
+
 
 @click.command()
 @click.option(
@@ -87,7 +105,6 @@ def git_paths(target):
     default=True,
     help="Open Streamlit app in browser",
 )
-
 @click.argument("target", required=False)
 def go(
     target: str,
@@ -97,44 +114,54 @@ def go(
     run_app: bool,
 ):
 
-    if target is not None and url(target):
-        header()
-        clone_path, cd_path, main_script_path, requirements_path = git_paths(target)
+    header()
+
+    if target is not None:
+
+        target_is_valid(target)
+
+        (
+            repository_url,
+            project_path,
+            streamlit_script_path,
+            requirements_path,
+        ) = parse_target(target)
 
         # Clone repo
-        new_step(f"Cloning repo {clone_path}")
-        os.system(f"git clone {clone_path} -q")
+        new_step(f"Cloning repo {repository_url}")
+        os.system(f"git clone {repository_url} -q")
 
         # Change directory to repo
-        new_step(f"Changing directory to {cd_path}")
-        os.chdir(cd_path)
+        new_step(f"Changing directory to {project_path}")
+        os.chdir(project_path.name)
 
         # Create .gitignore
-        new_step(f"Adding .gitignore to {cd_path}...")
+        new_step(f"Adding .gitignore to {project_path.name}...")
         with open(".gitignore", "w") as f:
             f.write(GITIGNORE_TEMPLATE)
 
         # Create a new environment with venv
         new_step("Creating a new environment with venv")
-        os.system("python -m venv .venv")
+        os.system("python3 -m venv .venv")
         os.system("source .venv/bin/activate")
 
         # Install dependencies
         new_step("Installing dependencies")
-        os.system(f"pip install --quiet -r {os.path.join(requirements_path, 'requirements.txt')}")
+        os.system(f"pip3 install --quiet -r {requirements_path.name}")
 
         # Open project in VS Code.
         if open_project_in_vs_code:
             new_step("Opening project in VS Code...")
-            os.system(f'code .')
-            os.system(f'code {main_script_path}')
+            os.system(f"code .")
+            os.system(f"code {streamlit_script_path.name}")
 
         # Run app
         if run_app:
             new_step("Running app...")
-            out = subprocess.check_output(["streamlit", "run", main_script_path])
+            out = subprocess.check_output(
+                ["streamlit", "run", streamlit_script_path.name]
+            )
             new_step(out)
-
 
         # Open app in browser.
         if open_app_in_browser:
@@ -143,56 +170,17 @@ def go(
             browser.open_new_tab()
 
         new_step("Closing...")
-    
+
     else:
-        header()
 
-        project_path = Path(path)
-        streamlit_script_path = Path(path) / "streamlit_app.py"
+        go(
+            target="https://github.com/arnaudmiribel/st-template/blob/main/streamlit_app.py",
+            path=path,
+            open_project_in_vs_code=open_project_in_vs_code,
+            open_app_in_browser=open_app_in_browser,
+            run_app=run_app,
+        )
 
-        # Create `streamlit_app.py`
-        if not os.path.exists(streamlit_script_path):
-            new_step(f"Creating new Streamlit script at {streamlit_script_path}...")
-            with open(streamlit_script_path, "w") as f:
-                f.write(SCRIPT_TEMPLATE)
-        else:
-            click.echo(click.style("Streamlit script already exists!"))
 
-        # Create secrets
-        new_step(f"Adding secrets to {streamlit_script_path}...")
-        (project_path / ".streamlit").mkdir(parents=False, exist_ok=False)
-        (project_path / ".streamlit" / "secrets.toml").touch()
-
-        # Create requirements
-        new_step(f"Adding requirements to {streamlit_script_path}...")
-        (project_path / "requirements.txt").touch()
-
-        # Create .gitignore
-        new_step(f"Adding .gitignore to {streamlit_script_path}...")
-        with open(project_path / ".gitignore", "w") as f:
-            f.write(GITIGNORE_TEMPLATE)
-
-        # Create README
-        new_step(f"Adding README.md to {streamlit_script_path}...")
-        with open(project_path / "README.md", "w") as f:
-            f.write(README_TEMPLATE)
-
-        # Open project in VS Code.
-        if open_project_in_vs_code:
-            new_step("Opening project in VS Code...")
-            os.system(f'code "{project_path}"')
-            os.system(f'code "{streamlit_script_path}"')
-
-        # Run app.
-        if run_app:
-            new_step("Running Streamlit app")
-            out = subprocess.check_output(["streamlit", "run", streamlit_script_path])
-            new_step(out)
-
-        # Open app in browser.
-        if open_app_in_browser:
-            browser = get_webbrowser()
-            new_step("Opening app in the browser...")
-            browser.open_new_tab()
-
-        new_step("Closing...")
+if __name__ == "__main__":
+    go()
