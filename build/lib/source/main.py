@@ -3,6 +3,9 @@ import os
 import webbrowser
 from pathlib import Path
 import subprocess
+from urllib.parse import urlparse
+import re
+from validators import url
 
 SCRIPT_TEMPLATE = """import streamlit as st
 
@@ -27,7 +30,11 @@ __pycache__/
 profile_default/
 ipython_config.py
 
+# virtualenv
+.venv/
+
 # Streamlit secrets
+.streamlit/secret.toml
 """
 
 
@@ -49,6 +56,14 @@ def new_step(text):
 def warning(text):
     click.echo(click.style(f"{text}", fg="red", bold=True), nl=True)
 
+
+def git_paths(target):
+    path = urlparse(target).path
+    clone_path = re.split("/blob/", target)[0]
+    cd_path = clone_path.strip("/").rsplit("/", 1)[-1]
+    main_script_path = re.split("/blob/[a-z]+/", path)[-1]
+    requirements_path = main_script_path.rsplit("/", 1)[0]
+    return clone_path, cd_path, main_script_path, requirements_path
 
 @click.command()
 @click.option(
@@ -72,61 +87,112 @@ def warning(text):
     default=True,
     help="Open Streamlit app in browser",
 )
+
+@click.argument("target", required=False)
 def go(
+    target: str,
     path: str,
     open_project_in_vs_code: bool,
     open_app_in_browser: bool,
     run_app: bool,
 ):
 
-    header()
+    if target is not None and url(target):
+        header()
+        clone_path, cd_path, main_script_path, requirements_path = git_paths(target)
 
-    project_path = Path(path)
-    streamlit_script_path = Path(path) / "streamlit_app.py"
+        # Clone repo
+        new_step(f"Cloning repo {clone_path}")
+        os.system(f"git clone {clone_path} -q")
 
-    # Create `streamlit_app.py`
-    if not os.path.exists(streamlit_script_path):
-        new_step(f"Creating new Streamlit script at {streamlit_script_path}...")
-        with open(streamlit_script_path, "w") as f:
-            f.write(SCRIPT_TEMPLATE)
+        # Change directory to repo
+        new_step(f"Changing directory to {cd_path}")
+        os.chdir(cd_path)
+
+        # Create .gitignore
+        new_step(f"Adding .gitignore to {cd_path}...")
+        with open(".gitignore", "w") as f:
+            f.write(GITIGNORE_TEMPLATE)
+
+        # Create a new environment with venv
+        new_step("Creating a new environment with venv")
+        os.system("python -m venv .venv")
+        os.system("source .venv/bin/activate")
+
+        # Install dependencies
+        new_step("Installing dependencies")
+        os.system(f"pip install --quiet -r {os.path.join(requirements_path, 'requirements.txt')}")
+
+        # Open project in VS Code.
+        if open_project_in_vs_code:
+            new_step("Opening project in VS Code...")
+            os.system(f'code .')
+            os.system(f'code {main_script_path}')
+
+        # Run app
+        if run_app:
+            new_step("Running app...")
+            out = subprocess.check_output(["streamlit", "run", main_script_path])
+            new_step(out)
+
+
+        # Open app in browser.
+        if open_app_in_browser:
+            browser = get_webbrowser()
+            new_step("Opening app in the browser...")
+            browser.open_new_tab()
+
+        new_step("Closing...")
+    
     else:
-        click.echo(click.style("Streamlit script already exists!"))
+        header()
 
-    # Create secrets
-    new_step(f"Adding secrets to {streamlit_script_path}...")
-    (project_path / ".streamlit").mkdir(parents=False, exist_ok=False)
-    (project_path / ".streamlit" / "secrets.toml").touch()
+        project_path = Path(path)
+        streamlit_script_path = Path(path) / "streamlit_app.py"
 
-    # Create requirements
-    new_step(f"Adding requirements to {streamlit_script_path}...")
-    (project_path / "requirements.txt").touch()
+        # Create `streamlit_app.py`
+        if not os.path.exists(streamlit_script_path):
+            new_step(f"Creating new Streamlit script at {streamlit_script_path}...")
+            with open(streamlit_script_path, "w") as f:
+                f.write(SCRIPT_TEMPLATE)
+        else:
+            click.echo(click.style("Streamlit script already exists!"))
 
-    # Create .gitignore
-    new_step(f"Adding .gitignore to {streamlit_script_path}...")
-    with open(project_path / ".gitignore", "w") as f:
-        f.write(GITIGNORE_TEMPLATE)
+        # Create secrets
+        new_step(f"Adding secrets to {streamlit_script_path}...")
+        (project_path / ".streamlit").mkdir(parents=False, exist_ok=False)
+        (project_path / ".streamlit" / "secrets.toml").touch()
 
-    # Create README
-    new_step(f"Adding README.md to {streamlit_script_path}...")
-    with open(project_path / "README.md", "w") as f:
-        f.write(README_TEMPLATE)
+        # Create requirements
+        new_step(f"Adding requirements to {streamlit_script_path}...")
+        (project_path / "requirements.txt").touch()
 
-    # Open project in VS Code.
-    if open_project_in_vs_code:
-        new_step("Opening project in VS Code...")
-        os.system(f'code "{project_path}"')
-        os.system(f'code "{streamlit_script_path}"')
+        # Create .gitignore
+        new_step(f"Adding .gitignore to {streamlit_script_path}...")
+        with open(project_path / ".gitignore", "w") as f:
+            f.write(GITIGNORE_TEMPLATE)
 
-    # Run app.
-    if run_app:
-        new_step("Running Streamlit app")
-        out = subprocess.check_output(["streamlit", "run", streamlit_script_path])
-        new_step(out)
+        # Create README
+        new_step(f"Adding README.md to {streamlit_script_path}...")
+        with open(project_path / "README.md", "w") as f:
+            f.write(README_TEMPLATE)
 
-    # Open app in browser.
-    if open_app_in_browser:
-        browser = get_webbrowser()
-        new_step("Opening app in the browser...")
-        browser.open_new_tab()
+        # Open project in VS Code.
+        if open_project_in_vs_code:
+            new_step("Opening project in VS Code...")
+            os.system(f'code "{project_path}"')
+            os.system(f'code "{streamlit_script_path}"')
 
-    new_step("Closing...")
+        # Run app.
+        if run_app:
+            new_step("Running Streamlit app")
+            out = subprocess.check_output(["streamlit", "run", streamlit_script_path])
+            new_step(out)
+
+        # Open app in browser.
+        if open_app_in_browser:
+            browser = get_webbrowser()
+            new_step("Opening app in the browser...")
+            browser.open_new_tab()
+
+        new_step("Closing...")
