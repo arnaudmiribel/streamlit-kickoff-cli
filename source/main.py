@@ -180,7 +180,3 @@ def go(
             open_app_in_browser=open_app_in_browser,
             run_app=run_app,
         )
-
-
-if __name__ == "__main__":
-    go()
