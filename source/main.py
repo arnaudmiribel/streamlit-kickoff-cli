@@ -149,6 +149,7 @@ def list():
 @main.command()
 def go():
     """😎 Open VS Code and your app in Chrome!"""
+    click.echo("WIP")
 
 
 @main.command()
