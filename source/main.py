@@ -1,3 +1,4 @@
+import io
 import os
 import re
 import subprocess
@@ -7,7 +8,18 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import click
+import pandas as pd
+from cookiecutter.main import cookiecutter
 from validators import url
+
+DEFAULT_REPOSITORY = (
+    "https://github.com/arnaudmiribel/st-template/blob/main/streamlit_app.py"
+)
+
+COOKIECUTTER_DEFAULT_DIRECTORY = "app"
+COOKIECUTTER_REPOSITORY = (
+    "https://github.com/arnaudmiribel/st-cookiecutter.git"
+)
 
 
 def get_webbrowser(os="macos"):
@@ -16,7 +28,14 @@ def get_webbrowser(os="macos"):
 
 def header():
     click.echo(
-        click.style("\n\n🎈 Welcome to `st` 🎈\n\n", fg="red", bold=True),
+        click.style("\n\n🎈 Welcome to st 🎈\n\n", fg="red", bold=True),
+        nl=True,
+    )
+
+
+def choice(text):
+    click.echo(
+        click.style(f"{text}", fg="red", bold=False),
         nl=True,
     )
 
@@ -33,7 +52,13 @@ def error(text):
     click.echo(click.style(f"💀💀💀 {text}", fg="red", bold=True), nl=True)
 
 
-def _target_is_valid(target: str):
+def success(text):
+    click.echo(
+        click.style(f"\n\n🎉 {text}\n\n", fg="green", bold=True), nl=True
+    )
+
+
+def _target_is_valid(target: str) -> bool:
     if target is not None and url(target):
         if "github" in target and target.endswith(".py"):
             return True
@@ -83,12 +108,147 @@ def parse_target(target: str):
     )
 
 
-@click.command()
+@click.group()
+def main():
+    pass
+
+
+def get_list() -> pd.DataFrame:
+    lsof = subprocess.check_output(
+        "lsof -nP -iTCP -sTCP:LISTEN",
+        shell=True,
+        stderr=subprocess.STDOUT,
+    )
+
+    df = pd.read_fwf(io.BytesIO(lsof))
+    df = df[df.COMMAND.eq("Python")]
+    df["PORT"] = df.NAME.apply(lambda d: d.split("(LISTEN)")[0].split(":")[1])
+    df = df[df.PORT.str.startswith("85")]
+    df["URL"] = "http://localhost:" + df.PORT
+    df = df.rename(columns={"PID": "App ID", "URL": "App URL"})
+    return df
+
+
+@main.command()
+def list():
+    """🤯 List running Streamlit apps under ports 85**"""
+
+    header()
+
+    choice("Let's look at your apps running locally...")
+
+    df = get_list()
+    if df.empty:
+        click.echo("Found no app running!")
+    else:
+        click.echo(
+            df[["App ID", "App URL"]].set_index("App ID").drop_duplicates()
+        )
+
+
+@main.command()
+def go():
+    """😎 Open VS Code and your app in Chrome!"""
+
+
+@main.command()
+@click.option(
+    "-id", "--id", default=None, help="Kill a given app ID", type=int
+)
+@click.option(
+    "-a",
+    "--all",
+    is_flag=True,
+    default=False,
+    help="Kill all Streamlit apps",
+    type=bool,
+)
+def kill(id: int, all: bool):
+    """🔫 Kill a given Streamlit app running locally!"""
+
+    df = get_list()
+
+    all_ids = df["App ID"].unique()
+    if id is not None:
+        if id in all_ids:
+            click.echo(f"Killing {id}...")
+            os.system(f"kill -9 {id}")
+        else:
+            error(
+                f"This app ID is not valid. Valid IDs are {all_ids}. Use `st"
+                " list` to learn more."
+            )
+
+    if all:
+        click.echo(f"Killing all apps...")
+        os.system(f"kill -9 {' '.join(all_ids)}")
+
+
+@main.command()
+def new():
+    """🆕 Create a new Streamlit project from an empty template"""
+
+    header()
+    choice("You just asked for a `new` Streamlit project. Let's go!")
+
+    path = click.prompt(
+        "New directory name",
+        type=str,
+        default=COOKIECUTTER_DEFAULT_DIRECTORY,
+    )
+
+    if click.confirm("Want to customize the template?", default=False):
+        app_title = click.prompt(
+            "Title of your app", type=str, default="Balloons"
+        )
+        app_uses_secrets = click.confirm(
+            "Will you be using secrets?", default=True
+        )
+        app_is_multi_page = click.confirm(
+            "Will your app use more than one page?", default=True
+        )
+        app_uses_snowflake = click.confirm(
+            "Are you connecting to Snowflake in this app?", default=False
+        )
+
+        cookiecutter(
+            COOKIECUTTER_REPOSITORY,
+            no_input=True,
+            extra_context={
+                "app_name": path,
+                "app_title": app_title,
+                "app_uses_secrets": int(app_uses_secrets),
+                "app_is_multi_page": int(app_is_multi_page),
+                "app_uses_snowflake": int(app_uses_snowflake),
+            },
+        )
+
+    else:
+        click.echo(
+            "Fine! We will use default values and create your new Streamlit"
+            f" app in '{path}'"
+        )
+        cookiecutter(
+            COOKIECUTTER_REPOSITORY,
+            no_input=True,
+        )
+
+    success(
+        f"Successfully created your new Streamlit app in directory '{path}'!"
+    )
+
+
+@main.command()
+@click.argument(
+    "target",
+    # help="Target GitHub repository URL.",
+    default=DEFAULT_REPOSITORY,
+)
 @click.option(
     "-p",
     "--path",
     help="Path where you want to create your Streamlit project.",
-    default=".",
+    default="app",
 )
 @click.option(
     "--open_project_in_vs_code",
@@ -105,16 +265,14 @@ def parse_target(target: str):
     default=True,
     help="Open Streamlit app in browser",
 )
-@click.argument("target", required=False)
-def go(
+def clone(
     target: str,
     path: str,
     open_project_in_vs_code: bool,
     open_app_in_browser: bool,
     run_app: bool,
 ):
-
-    header()
+    """👯 Clone an existing Streamlit project"""
 
     if target is not None:
 
@@ -127,18 +285,17 @@ def go(
             requirements_path,
         ) = parse_target(target)
 
+        if path:
+            project_path = Path(path)
+
         # Clone repo
         new_step(f"Cloning repo {repository_url}")
-        os.system(f"git clone {repository_url} -q")
+        os.system(f"git clone {repository_url} {project_path} -q")
 
         # Change directory to repo
-        new_step(f"Changing directory to {project_path}")
-        os.chdir(project_path.name)
-
-        # Create .gitignore
-        new_step(f"Adding .gitignore to {project_path.name}...")
-        with open(".gitignore", "w") as f:
-            f.write(GITIGNORE_TEMPLATE)
+        if path != ".":
+            new_step(f"Changing directory to '{project_path}/'")
+            os.chdir(project_path.name)
 
         # Create a new environment with venv
         new_step("Creating a new environment with venv")
@@ -171,12 +328,6 @@ def go(
 
         new_step("Closing...")
 
-    else:
 
-        go(
-            target="https://github.com/arnaudmiribel/st-template/blob/main/streamlit_app.py",
-            path=path,
-            open_project_in_vs_code=open_project_in_vs_code,
-            open_app_in_browser=open_app_in_browser,
-            run_app=run_app,
-        )
+if __name__ == "__main__":
+    main()
