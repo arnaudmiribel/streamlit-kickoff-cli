@@ -110,7 +110,11 @@ def parse_target(target: str):
 
 @click.group()
 def main():
-    pass
+    """🎈 Welcome to st 🎈
+    
+    This is an experimental CLI to help you kick off and
+    maintain Streamlit projects as fast as possible!
+    """
 
 
 def get_list() -> pd.DataFrame:
@@ -132,8 +136,6 @@ def get_list() -> pd.DataFrame:
 @main.command()
 def list():
     """🤯 List running Streamlit apps under ports 85**"""
-
-    header()
 
     choice("Let's look at your apps running locally...")
 
@@ -189,7 +191,6 @@ def kill(id: int, all: bool):
 def new():
     """🆕 Create a new Streamlit project from an empty template"""
 
-    header()
     choice("You just asked for a `new` Streamlit project. Let's go!")
 
     path = click.prompt(
