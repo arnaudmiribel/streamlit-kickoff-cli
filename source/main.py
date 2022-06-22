@@ -111,7 +111,7 @@ def parse_target(target: str):
 @click.group()
 def main():
     """🎈 Welcome to st 🎈
-    
+
     This is an experimental CLI to help you kick off and
     maintain Streamlit projects as fast as possible!
     """
@@ -150,7 +150,7 @@ def list():
 
 @main.command()
 def go():
-    """😎 Open VS Code and your app in Chrome!"""
+    """😎 Open VS Code and your app in Chrome! [WIP]"""
     click.echo("WIP")
 
 
