@@ -124,12 +124,26 @@ def get_list() -> pd.DataFrame:
         stderr=subprocess.STDOUT,
     )
 
+    ps = subprocess.check_output(
+        "ps",
+        shell=True,
+        stderr=subprocess.STDOUT,
+    )
+
     df = pd.read_fwf(io.BytesIO(lsof))
     df = df[df.COMMAND.eq("Python")]
     df["PORT"] = df.NAME.apply(lambda d: d.split("(LISTEN)")[0].split(":")[1])
     df = df[df.PORT.str.startswith("85")]
     df["URL"] = "http://localhost:" + df.PORT
+    df.drop_duplicates(inplace=True, subset=["PID"])
+
+    ps_df = pd.read_fwf(io.BytesIO(ps))
+    ps_df = ps_df.rename(columns={"Unnamed: 4": "Python", "Unnamed: 5": "Run", "Unnamed: 6": "Main file"})
+    ps_df = ps_df.loc[ps_df.PID.isin(df.PID)]
+
+    df["Main file"] = df.PID.map(ps_df.set_index("PID")["Main file"])
     df = df.rename(columns={"PID": "App ID", "URL": "App URL"})
+    del ps_df
     return df
 
 
@@ -144,7 +158,7 @@ def list():
         click.echo("Found no app running!")
     else:
         click.echo(
-            df[["App ID", "App URL"]].set_index("App ID").drop_duplicates()
+            df[["App ID", "App URL", "Main file"]].set_index("App ID")
         )
 
 
