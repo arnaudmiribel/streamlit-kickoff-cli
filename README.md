@@ -8,6 +8,9 @@
 
 ---
 
+![CleanShot 2022-08-25 at 15 38 30](https://user-images.githubusercontent.com/7164864/186680001-da90e017-fb13-4305-9138-f07fee420da0.gif)
+
+
 <p align="center">
     <img src="https://user-images.githubusercontent.com/7164864/186678966-f489514c-b26f-4533-8e94-a43d2ce0bb52.gif" width=1000></img>
 </p>
