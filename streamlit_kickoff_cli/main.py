@@ -167,6 +167,9 @@ def _new():
         cookiecutter(
             COOKIECUTTER_REPOSITORY,
             no_input=True,
+            extra_context={
+                "app_name": directory_name,
+            },
         )
 
     success(
