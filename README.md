@@ -8,11 +8,8 @@
 
 ---
 
-![CleanShot 2022-08-25 at 15 38 30](https://user-images.githubusercontent.com/7164864/186680001-da90e017-fb13-4305-9138-f07fee420da0.gif)
-
-
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/7164864/186678966-f489514c-b26f-4533-8e94-a43d2ce0bb52.gif" width=1000></img>
+    <img src="https://user-images.githubusercontent.com/7164864/186680966-f70851a6-867a-4608-a52c-aa139d0ebf20.gif"></img>
 </p>
 
 ---
@@ -27,17 +24,26 @@ pip install streamlit-kickoff-cli
 
 ## Usage
 
-```bash
-$ stk --help
 ```
+$ stk --help
+
+Usage: stk [OPTIONS] COMMAND [ARGS]...
+
+  Welcome to stk 👞
+
+  This is a simple CLI to help you kick off and maintain Streamlit projects as
+  fast as possible!
+
+Options:
+  --help  Show this message and exit.
 
 Commands:
-- new   🆕 Create a new Streamlit project
-- dev   👩‍💻 Dev time! Opens VS Code and your app in Chrome!
-- kick  🚀 New app + dev set up NOW!
-- list  🤯 List running Streamlit apps under ports 85**
-- kill  🔫 Kill a given Streamlit app running locally!
-
+  new   🆕 Create a new Streamlit project
+  dev   👩‍💻 Dev time! Opens VS Code and your app in Chrome!
+  kick  🚀 New app + dev set up NOW!
+  list  🤯 List running Streamlit apps under ports 85**
+  kill  🔫 Kill a given Streamlit app running locally!
+```
 
 ## Troubleshooting
 
