@@ -1,0 +1,29 @@
+[build-system]
+requires = ["click==7.1.2", "streamlit", "cookiecutter"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "streamlit_kickoff_cli"
+version = "0.0.2"
+authors = [
+  { name="Arnaud Miribel", email="arnaudmiribel@gmail.com" },
+]
+description = "stk is a simple CLI to kickoff and manage Streamlit projects"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.6"
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+keywords = [
+    "python",
+    "streamlit",
+    "cli",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/arnaudmiribel/streamlit-kickoff-cli"
+"Bug Tracker" = "https://github.com/arnaudmiribel/streamlit-kickoff-cli/issues"
+
+[project.scripts]
+stk = "streamlit_kickoff_cli.main:main"
