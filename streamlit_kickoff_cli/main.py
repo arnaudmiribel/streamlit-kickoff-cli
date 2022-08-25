@@ -117,9 +117,9 @@ def parse_target(target: str):
 
 @click.group(cls=NaturalOrderGroup)
 def main():
-    """Welcome to stk 🎈
+    """Welcome to stk 👞
 
-    This is an experimental CLI to help you kick off and
+    This is a simple CLI to help you kick off and
     maintain Streamlit projects as fast as possible!
     """
 
