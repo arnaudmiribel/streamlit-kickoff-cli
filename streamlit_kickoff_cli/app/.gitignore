@@ -128,7 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Streamlit
+# Add Streamlit secrets to .gitignore
 .streamlit/secrets.toml
-
-.DS_Store
