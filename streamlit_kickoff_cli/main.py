@@ -250,7 +250,7 @@ def get_list() -> pd.DataFrame:
     )
 
     df = pd.read_fwf(io.BytesIO(lsof))
-    df = df[df.COMMAND.eq("Python")]
+    df = df[df.COMMAND.str.lower().str.contains("python")]
     df["PORT"] = df.NAME.apply(lambda d: d.split("(LISTEN)")[0].split(":")[1])
     df = df[df.PORT.str.startswith("85")]
     df["URL"] = "http://localhost:" + df.PORT
