@@ -2,9 +2,9 @@
 
 [![PyPI](https://img.shields.io/pypi/v/streamlit-kickoff-cli)](https://pypi.org/project/streamlit-kickoff-cli/)
 
-**A simple CLI to kickoff and manage your (new) Streamlit projects**
+**A simple CLI to kickoff and manage Streamlit projects**
 
-streamlit-kickoff-cli (short `stk`) is a CLI that comes with a limited set of features to help you create, manage and iterate on your Streamlit projects!
+`stk` is a CLI that comes with a limited set of features to help you create, manage and iterate on your Streamlit projects!
 
 ---
 
@@ -12,6 +12,7 @@ streamlit-kickoff-cli (short `stk`) is a CLI that comes with a limited set of fe
     <img src="https://user-images.githubusercontent.com/7164864/145828632-052ef856-6fb4-4823-9405-9c822fead2fd.gif" width=600></img>
 </p>
 
+---
 
 ## Installation
 
