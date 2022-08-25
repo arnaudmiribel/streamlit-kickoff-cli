@@ -44,7 +44,7 @@ def header():
 
 def choice(text):
     click.echo(
-        click.style(f"\n{text}\n", bold=True),
+        click.style(f"\n{text}", bold=True),
         nl=True,
     )
 
@@ -54,11 +54,11 @@ def new_step(text):
 
 
 def warning(text):
-    click.echo(click.style(f"⚠️ {text}", fg="red", bold=True), nl=True)
+    click.echo(click.style(f"\n⚠️ {text}", fg="red", bold=True), nl=True)
 
 
 def error(text):
-    click.echo(click.style(f"💀 {text}", fg="red", bold=True), nl=True)
+    click.echo(click.style(f"\n💀 {text}", fg="red", bold=True), nl=True)
 
 
 def success(text):
@@ -284,6 +284,13 @@ def list():
 )
 def kill(id: int, all: bool):
     """🔫 Kill a given Streamlit app running locally!"""
+
+    if (id is not None and all) or (id is None and not all):
+        error(
+            "You must either input the app process ID --id or choose --all to"
+            " kill all apps at once."
+        )
+        sys.exit()
 
     df = get_list()
 
