@@ -4,7 +4,7 @@
 
 **A simple CLI to kickoff and manage Streamlit projects**
 
-`stk` is a CLI that comes with a limited set of features to help you create, manage and iterate on your Streamlit projects!
+`stk` is a command-line interface that helps you create, manage and iterate on your Streamlit projects!
 
 ---
 
