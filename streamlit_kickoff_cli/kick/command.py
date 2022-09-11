@@ -13,7 +13,7 @@ def kick(ctx: click.Context,):
 
     choice("🚀 New app + dev set up NOW!")
 
-    directory_name = _new()
+    directory_name = _new(ctx)
     if directory_name:
         os.chdir(directory_name)
-        _dev()
+        _dev(ctx)

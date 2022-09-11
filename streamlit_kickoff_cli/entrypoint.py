@@ -1,11 +1,8 @@
-
-import os
 import webbrowser
 from typing import List
 
 import click
 
-from context_helpers import get_editor_command
 from dev import command as dev_command
 from kick import command as kick_command
 from kill import command as kill_command
@@ -38,8 +35,6 @@ def set_context_object(
     try:
         ctx.ensure_object(dict)
         ctx.obj["BROWSER"] = webbrowser.get()
-        # ctx.obj["EDITOR"] = os.getenv("EDITOR")
-        # ctx.obj["EDITOR_COMMAND"] = get_editor_command(ctx.obj["EDITOR"])
     except Exception as e:
         raise e
     return ctx
