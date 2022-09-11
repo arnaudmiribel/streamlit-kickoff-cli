@@ -1,6 +1,7 @@
 import click
 from cookiecutter.main import cookiecutter
-from custom_logging import choice, success
+
+from ..custom_logging import choice, success
 
 DEFAULT_REPOSITORY = (
     "https://github.com/arnaudmiribel/st-template/blob/main/streamlit_app.py"

@@ -3,11 +3,11 @@ from typing import List
 
 import click
 
-from dev import command as dev_command
-from kick import command as kick_command
-from kill import command as kill_command
-from list import command as list_command
-from new import command as new_command
+from .dev import command as dev_command
+from .kick import command as kick_command
+from .kill import command as kill_command
+from .list import command as list_command
+from .new import command as new_command
 
 AVAILABLE_COMMANDS: List[click.Command] = [
     new_command.new,

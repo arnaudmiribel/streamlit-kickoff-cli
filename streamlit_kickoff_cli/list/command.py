@@ -3,7 +3,8 @@ import subprocess
 
 import click
 import pandas as pd
-from custom_logging import choice
+
+from ..custom_logging import choice
 
 
 def get_list() -> pd.DataFrame:

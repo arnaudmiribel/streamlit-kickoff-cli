@@ -1,9 +1,10 @@
 import os
 
 import click
-from custom_logging import choice
-from dev.command import _dev
-from new.command import _new
+
+from ..custom_logging import choice
+from ..dev.command import _dev
+from ..new.command import _new
 
 
 @click.command()

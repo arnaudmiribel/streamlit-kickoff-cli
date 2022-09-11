@@ -2,8 +2,9 @@ import os
 import sys
 
 import click
-from custom_logging import error
-from list.command import get_list
+
+from ..custom_logging import error
+from ..list.command import get_list
 
 
 @click.command()

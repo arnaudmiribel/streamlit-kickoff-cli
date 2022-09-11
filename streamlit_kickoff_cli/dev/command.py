@@ -4,7 +4,8 @@ import webbrowser
 from pathlib import Path
 
 import click
-from custom_logging import choice, error, new_step
+
+from ..custom_logging import choice, error, new_step
 
 
 def get_webbrowser(os="macos"):
