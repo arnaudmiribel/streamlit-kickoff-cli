@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "streamlit_kickoff_cli"
-version = "0.0.2"
+version = "0.0.4"
 authors = [
   { name="Arnaud Miribel", email="arnaudmiribel@gmail.com" },
 ]
@@ -26,4 +26,4 @@ keywords = [
 "Bug Tracker" = "https://github.com/arnaudmiribel/streamlit-kickoff-cli/issues"
 
 [project.scripts]
-stk = "streamlit_kickoff_cli.main:main"
+stk = "streamlit_kickoff_cli.entrypoint:stk"
