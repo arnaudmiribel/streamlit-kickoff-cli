@@ -1,5 +1,5 @@
 [build-system]
-requires = ["click==7.1.2", "streamlit", "cookiecutter"]
+requires = ["click==7.1.2", "streamlit", "cookiecutter", "setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
